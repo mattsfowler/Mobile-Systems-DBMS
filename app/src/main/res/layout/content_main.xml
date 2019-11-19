@@ -8,13 +8,29 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <Button
+        android:id="@+id/btnWarehouses"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="4dp"
+        android:text="Warehouses"
+        app:layout_constraintTop_toBottomOf="@+id/btnProducts"
+        tools:layout_editor_absoluteX="0dp" />
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/lblMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Main Menu"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btnProducts"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:text="Products"
+        app:layout_constraintTop_toBottomOf="@+id/lblMainMenu"
+        tools:layout_editor_absoluteX="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
