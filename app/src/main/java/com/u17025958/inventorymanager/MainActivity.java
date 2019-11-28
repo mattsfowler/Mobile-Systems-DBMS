@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBtnViewWarehousesClick(View view) {
-
+        Intent intent = new Intent(this, ViewWarehouses.class);
+        Snackbar.make(view, "Opening warehouse view", Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+        startActivity(intent);
     }
 }

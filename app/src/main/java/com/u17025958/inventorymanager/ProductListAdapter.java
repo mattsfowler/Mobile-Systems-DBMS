@@ -9,50 +9,61 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.LinkedList;
 
-public class ProductListAdapter extends
-        RecyclerView.Adapter<ProductListAdapter.WordViewHolder> {
 
-    private final LinkedList<String> mWordList;
+public class ProductListAdapter extends
+        RecyclerView.Adapter<ProductListAdapter.ProductViewHolder> {
+
+    private final LinkedList<String> mProductList;
     private LayoutInflater mInflater;
 
     public ProductListAdapter(Context context,
-                           LinkedList<String> wordList) {
+                           LinkedList<String> productList) {
         mInflater = LayoutInflater.from(context);
-        this.mWordList = wordList;
+        this.mProductList = productList;
     }
 
     @NonNull
     @Override
-    public WordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+    public ProductListAdapter.ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View mItemView = mInflater.inflate(R.layout.productlist_item, parent, false);
+        return new ProductViewHolder(mItemView, this);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
+        String mCurrent = mProductList.get(position);
+        holder.productItemView.setText(mCurrent);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mProductList.size();
     }
 
-    class WordViewHolder extends RecyclerView.ViewHolder
+    class ProductViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        public final TextView wordItemView;
+        public final TextView productItemView;
         final ProductListAdapter mAdapter;
 
-        public WordViewHolder(View itemView, ProductListAdapter adapter) {
+        public ProductViewHolder(View itemView, ProductListAdapter adapter) {
             super(itemView);
-            wordItemView = itemView.findViewById(R.id.lblProduct);
+            productItemView = itemView.findViewById(R.id.product);
             this.mAdapter = adapter;
             itemView.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View v) {}
+        public void onClick(View v) {
+            int mPosition = getLayoutPosition();
+            String element = mProductList.get(mPosition);
+            // open the edit product activity with the selected product
+            Snackbar.make(v, "Clicked on: " + element, Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+        }
     }
 }
