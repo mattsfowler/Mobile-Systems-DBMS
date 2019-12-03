@@ -1,6 +1,7 @@
 package com.u17025958.inventorymanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class ProductListAdapter extends
             implements View.OnClickListener {
 
         public final TextView productItemView;
+        public final int productID;
         final ProductListAdapter mAdapter;
 
         public ProductViewHolder(View itemView, ProductListAdapter adapter) {
@@ -64,6 +66,8 @@ public class ProductListAdapter extends
             // open the edit product activity with the selected product
             Snackbar.make(v, "Clicked on: " + element, Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();
+            Intent intent = new Intent(this, AddProduct.class);
+            intent.putExtra("id", this.productID);
         }
     }
 }

@@ -3,9 +3,6 @@ package com.u17025958.inventorymanager;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,6 +16,8 @@ import java.util.regex.Pattern;
 
 public class AddProduct extends AppCompatActivity {
 
+    private DatabaseManager DBManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +27,12 @@ public class AddProduct extends AppCompatActivity {
 
         TextView txtPrice = findViewById(R.id.txtPrice);
         txtPrice.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(9, 2)});
+
+        Intent intent = getIntent();
+        int id = intent.getIntExtra("id", -1);
+        if (id > -1) {
+
+        }
     }
 
     // Taken from Stack Overflow: https://stackoverflow.com/questions/5357455/limit-decimal-places-in-android-edittext

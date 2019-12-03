@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class ViewProducts extends AppCompatActivity {
@@ -20,6 +22,7 @@ public class ViewProducts extends AppCompatActivity {
     private final LinkedList<String> mProductList = new LinkedList<>();
     private RecyclerView rcyProductList;
     private ProductListAdapter plAdapter;
+    private DatabaseManager DBManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class ViewProducts extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        DBManager = new DatabaseManager(this);
         getProductList();
         rcyProductList = findViewById(R.id.rcyProductList);
         plAdapter = new ProductListAdapter(this, mProductList);
@@ -40,18 +44,17 @@ public class ViewProducts extends AppCompatActivity {
         Intent intent = new Intent(this, AddProduct.class);
         Snackbar.make(view, "Opening add product", Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
+        intent.putExtra("id", -1);
         startActivity(intent);
     }
 
     public void getProductList(){
-
-        // Should use the database manager to get products from the database
-        // For now, we hardcode some basic values
-        mProductList.addLast("Trampoline (3)");
-        mProductList.addLast("Laptop (1)");
-        mProductList.addLast("Blender (12)");
-        mProductList.addLast("Tortoise (4)");
-        mProductList.addLast("Avocado (333)");
+        ArrayList<ProductMemberModel> products = DBManager.getAllProducts();
+        Iterator i = products.iterator();
+        while (i.hasNext()) {
+            ProductMemberModel product = (ProductMemberModel)i.next();
+            mProductList.addLast(product.getName());
+        }
     }
 
 }
