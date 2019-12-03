@@ -19,7 +19,7 @@ import java.util.LinkedList;
 
 public class ViewProducts extends AppCompatActivity {
 
-    private final LinkedList<String> mProductList = new LinkedList<>();
+    private final LinkedList<ProductMemberModel> mProductList = new LinkedList<>();
     private RecyclerView rcyProductList;
     private ProductListAdapter plAdapter;
     private DatabaseManager DBManager;
@@ -39,6 +39,12 @@ public class ViewProducts extends AppCompatActivity {
         rcyProductList.setLayoutManager(new LinearLayoutManager(this)); //default layout manager
     }
 
+    @Override
+    protected  void onResume() {
+        super.onResume();
+        plAdapter.notifyDataSetChanged();
+    }
+
     public void onFABClick(View view)
     {
         Intent intent = new Intent(this, AddProduct.class);
@@ -49,12 +55,7 @@ public class ViewProducts extends AppCompatActivity {
     }
 
     public void getProductList(){
-        ArrayList<ProductMemberModel> products = DBManager.getAllProducts();
-        Iterator i = products.iterator();
-        while (i.hasNext()) {
-            ProductMemberModel product = (ProductMemberModel)i.next();
-            mProductList.addLast(product.getName());
-        }
+        mProductList.addAll(DBManager.getAllProducts());
     }
 
 }

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
@@ -55,9 +56,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ArrayList<ProductMemberModel> getAllProducts() {
+    public LinkedList<ProductMemberModel> getAllProducts() {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<ProductMemberModel> productList = new ArrayList<>();
+        LinkedList<ProductMemberModel> productList = new LinkedList<>();
         String selectQuery = "SELECT * FROM " + DATABASE_TABLE_PRODUCTS;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -68,18 +69,60 @@ public class DatabaseManager extends SQLiteOpenHelper {
             product.setPrice(cursor.getFloat(cursor.getColumnIndex(PRODUCT_KEY_PRICE)));
             product.setSize(cursor.getFloat(cursor.getColumnIndex(PRODUCT_KEY_SIZE)));
             product.setImage(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_IMAGE)));
-            productList.add(product);
+            productList.addLast(product);
         }
         return productList;
     }
 
-    public void addProduct(String name, float price, float size, String image) {
+    public long addProduct(String name, float price, float size, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues newValues = new ContentValues();
         newValues.put(PRODUCT_KEY_NAME, name);
         newValues.put(PRODUCT_KEY_PRICE, price);
         newValues.put(PRODUCT_KEY_SIZE, size);
         newValues.put(PRODUCT_KEY_IMAGE, image);
-        db.insert(DATABASE_TABLE_PRODUCTS, null, newValues);
+        return db.insert(DATABASE_TABLE_PRODUCTS, null, newValues);
+    }
+
+    public void updateProduct(int id, String name, float price, float size, String image) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(PRODUCT_KEY_NAME, name);
+        updatedValues.put(PRODUCT_KEY_PRICE, price);
+        updatedValues.put(PRODUCT_KEY_SIZE, size);
+        updatedValues.put(PRODUCT_KEY_IMAGE, image);
+        String where = PRODUCT_KEY_ID + " = ?";
+        String whereArgs[] = new String[]{String.valueOf(id)};
+        db.update(DATABASE_TABLE_PRODUCTS, updatedValues, where, whereArgs);
+    }
+
+    public LinkedList<String> getProductNames(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        LinkedList<String> names = new LinkedList<>();
+        String selectQuery = "SELECT " + PRODUCT_KEY_NAME + " FROM " + DATABASE_TABLE_PRODUCTS;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        while (cursor.moveToNext()) {
+            names.addLast(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_NAME)));
+        }
+        return names;
+    }
+
+    public ProductMemberModel getProductByID(int id) {
+        // TODO: does not deal with invalid ids
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        // TODO: NOT SECURE!! Vulnerable to SQL injection, temporary solution
+        String selectQuery = "SELECT * FROM " + DATABASE_TABLE_PRODUCTS
+                + " WHERE " + PRODUCT_KEY_ID + "=" + id;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        ProductMemberModel product = new ProductMemberModel();
+        product.setId(cursor.getInt(cursor.getColumnIndex(PRODUCT_KEY_ID)));
+        product.setName(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_NAME)));
+        product.setPrice(cursor.getFloat(cursor.getColumnIndex(PRODUCT_KEY_PRICE)));
+        product.setSize(cursor.getFloat(cursor.getColumnIndex(PRODUCT_KEY_SIZE)));
+        product.setImage(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_IMAGE)));
+        return product;
     }
 }

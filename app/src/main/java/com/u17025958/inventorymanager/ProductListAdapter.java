@@ -18,11 +18,11 @@ import java.util.LinkedList;
 public class ProductListAdapter extends
         RecyclerView.Adapter<ProductListAdapter.ProductViewHolder> {
 
-    private final LinkedList<String> mProductList;
+    private final LinkedList<ProductMemberModel> mProductList;
     private LayoutInflater mInflater;
 
     public ProductListAdapter(Context context,
-                           LinkedList<String> productList) {
+                           LinkedList<ProductMemberModel> productList) {
         mInflater = LayoutInflater.from(context);
         this.mProductList = productList;
     }
@@ -36,8 +36,8 @@ public class ProductListAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        String mCurrent = mProductList.get(position);
-        holder.productItemView.setText(mCurrent);
+        ProductMemberModel mCurrent = mProductList.get(position);
+        holder.productItemView.setText(mCurrent.getName());
     }
 
     @Override
@@ -49,7 +49,6 @@ public class ProductListAdapter extends
             implements View.OnClickListener {
 
         public final TextView productItemView;
-        public final int productID;
         final ProductListAdapter mAdapter;
 
         public ProductViewHolder(View itemView, ProductListAdapter adapter) {
@@ -61,13 +60,12 @@ public class ProductListAdapter extends
 
         @Override
         public void onClick(View v) {
+            Context context = v.getContext();
             int mPosition = getLayoutPosition();
-            String element = mProductList.get(mPosition);
-            // open the edit product activity with the selected product
-            Snackbar.make(v, "Clicked on: " + element, Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-            Intent intent = new Intent(this, AddProduct.class);
-            intent.putExtra("id", this.productID);
+            ProductMemberModel element = mProductList.get(mPosition);
+            Intent intent = new Intent(context, AddProduct.class);
+            intent.putExtra("id", element.getId());
+            context.startActivity(intent);
         }
     }
 }
