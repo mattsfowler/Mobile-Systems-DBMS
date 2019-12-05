@@ -23,6 +23,11 @@ public class AddProduct extends AppCompatActivity {
 
     private DatabaseManager DBManager;
     private int id;
+    TextView txtName;
+    TextView txtPrice;
+    TextView txtSize;
+    TextView txtWarehouses;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +36,10 @@ public class AddProduct extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TextView txtName = findViewById(R.id.txtName);
-        TextView txtPrice = findViewById(R.id.txtPrice);
-        TextView txtSize = findViewById(R.id.txtSize);
+        txtName = findViewById(R.id.txtName);
+        txtPrice = findViewById(R.id.txtPrice);
+        txtSize = findViewById(R.id.txtSize);
+        txtWarehouses = findViewById(R.id.txtWarehouses);
         txtPrice.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(9, 2)});
 
         DBManager = new DatabaseManager(this);
@@ -45,6 +51,7 @@ public class AddProduct extends AppCompatActivity {
             txtName.setText(product.getName());
             txtPrice.setText(( ((Float)product.getPrice()).toString() ));
             txtSize.setText(( ((Float)product.getSize()).toString() ));
+            txtWarehouses.setText(DBManager.getWarehouseByID( product.getWarehouse() ));
         }
     }
 
@@ -64,7 +71,12 @@ public class AddProduct extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_remove) {
-            Log.d("AddProduct", "Removing beep boop...");
+            if (DBManager.removeProduct(this.id)) {
+                Snackbar.make(findViewById(R.id.cslEditProduct), "Product removed", Snackbar.LENGTH_LONG).show();
+                finish();
+            } else {
+                Snackbar.make(findViewById(R.id.cslEditProduct), "Could not be deleted", Snackbar.LENGTH_LONG).show();
+            }
             return true;
         }
 
@@ -92,16 +104,23 @@ public class AddProduct extends AppCompatActivity {
 
     public void onFABClick(View view)
     {
-        String name = ((TextView)findViewById(R.id.txtName)).getText().toString();
-        float price = Float.parseFloat(((TextView)findViewById(R.id.txtPrice)).getText().toString());
-        float size = Float.parseFloat(((TextView)findViewById(R.id.txtSize)).getText().toString());
-        if (this.id > -1) {
-            DBManager.updateProduct(id, name, price, size, "");
-            Snackbar.make(view, "Product updated", Snackbar.LENGTH_LONG).show();
-        }
-        else {
-            this.id = (int) DBManager.addProduct(name, price, size, "");
-            Snackbar.make(view, "New product created!", Snackbar.LENGTH_LONG).show();
+        String name = txtName.getText().toString();
+        float price = Float.parseFloat(txtPrice.getText().toString());
+        float size = Float.parseFloat(txtSize.getText().toString());
+        String warehouse = txtWarehouses.getText().toString();
+
+        int warehouseID = DBManager.getWarehouseByLocation(warehouse);
+
+        if (warehouseID > -1) {
+            if (this.id > -1) {
+                DBManager.updateProduct(id, name, price, size, warehouseID, "");
+                Snackbar.make(view, "Product updated", Snackbar.LENGTH_LONG).show();
+            } else {
+                this.id = (int) DBManager.addProduct(name, price, size, "");
+                Snackbar.make(view, "New product created!", Snackbar.LENGTH_LONG).show();
+            }
+        } else {
+            Snackbar.make(view, "Invalid warehouse, not saved!", Snackbar.LENGTH_LONG).show();
         }
     }
     public void onSetImageClick(View view)

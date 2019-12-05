@@ -8,6 +8,7 @@ public class ProductMemberModel implements Serializable {
     private String name;
     private float price;
     private float size;
+    private int warehouse;
     private String image;
 
     public int getId() {
@@ -56,5 +57,13 @@ public class ProductMemberModel implements Serializable {
         s += "size:" + size  + "\n";
         s += "image:" + image;
         return s;
+    }
+
+    public int getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(int warehouse) {
+        this.warehouse = warehouse;
     }
 }

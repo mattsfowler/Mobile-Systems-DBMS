@@ -18,7 +18,7 @@ import java.util.LinkedList;
 
 public class ViewWarehouseStock extends AppCompatActivity {
 
-    private final LinkedList<StockMemberModel> mStockList = new LinkedList<>();
+    private final LinkedList<String> mStockList = new LinkedList<>();
     private RecyclerView rcyProductList;
     private StockListAdapter slAdapter;
     private DatabaseManager DBManager;
@@ -35,7 +35,7 @@ public class ViewWarehouseStock extends AppCompatActivity {
         warehouseID = intent.getIntExtra("warehouse_id", 1);
 
         DBManager = new DatabaseManager(this);
-        mStockList.addAll(DBManager.getStockOf(warehouseID));
+        mStockList.addAll(DBManager.getInventoryOf(warehouseID));
         rcyProductList = findViewById(R.id.rcyProductList);
         slAdapter = new StockListAdapter(this, mStockList);
         rcyProductList.setAdapter(slAdapter);
@@ -46,13 +46,7 @@ public class ViewWarehouseStock extends AppCompatActivity {
     }
 
     public void onFABClick(View view) {
-        Intent intent = new Intent(this, EditStock.class);
-        Snackbar.make(view, "Opening edit stock", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
-        intent.putExtra("product_id", -1);
-        intent.putExtra("product_name", "");
-        intent.putExtra("amount", 0);
-        startActivity(intent);
+        //Nothing yet
     }
 
 }

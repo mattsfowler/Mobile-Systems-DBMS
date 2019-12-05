@@ -15,20 +15,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static String DATABASE_NAME = "inventory.db";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String DATABASE_TABLE_PRODUCTS = "products";
-    private static final String PRODUCT_KEY_ID = "_id";
-    private static final String PRODUCT_KEY_NAME = "NAME_COLUMN";
-    private static final String PRODUCT_KEY_PRICE = "PRICE_COLUMN";
-    private static final String PRODUCT_KEY_SIZE = "SIZE_COLUMN";
-    private static final String PRODUCT_KEY_IMAGE = "IMAGE_COLUMN";
-    private static final String CREATE_DATABASE_TABLE_PRODUCTS = "CREATE TABLE "
-            + DATABASE_TABLE_PRODUCTS + "(" + PRODUCT_KEY_ID
-            + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + PRODUCT_KEY_NAME + " TEXT,"
-            + PRODUCT_KEY_PRICE + " REAL,"
-            + PRODUCT_KEY_SIZE + " REAL,"
-            + PRODUCT_KEY_IMAGE + " TEXT );";
-
     private static final String DATABASE_TABLE_WAREHOUSES = "warehouses";
     private static final String WAREHOUSE_KEY_ID = "_id";
     private static final String WAREHOUSE_KEY_LOCATION = "LOCATION_COLUMN";
@@ -39,20 +25,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + WAREHOUSE_KEY_LOCATION + " TEXT,"
             + WAREHOUSE_KEY_CAPACITY + " REAL );";
 
-    private static final String DATABASE_TABLE_LINK = "prod_ware_map";
-    private static final String LINK_KEY_PRODUCT_ID = "PRODUCT_ID";
-    private static final String LINK_KEY_WAREHOUSE_ID = "WAREHOUSE_ID";
-    private static final String LINK_KEY_AMOUNT = "AMOUNT";
-    private static final String CREATE_DATABASE_TABLE_LINK = "CREATE TABLE "
-            + DATABASE_TABLE_LINK + "("
-            + LINK_KEY_PRODUCT_ID + " INTEGER,"
-            + LINK_KEY_WAREHOUSE_ID + " INTEGER,"
-            + LINK_KEY_AMOUNT + " INTEGER,"
-            + " FOREIGN KEY (" + LINK_KEY_PRODUCT_ID + ")"
-            + " REFERENCES " + DATABASE_TABLE_PRODUCTS + "(" + PRODUCT_KEY_ID + "),"
-            + " FOREIGN KEY (" + LINK_KEY_WAREHOUSE_ID + ")"
-            + " REFERENCES " + DATABASE_TABLE_WAREHOUSES + "(" + WAREHOUSE_KEY_ID + "),"
-            + " PRIMARY KEY (" + LINK_KEY_PRODUCT_ID + ", " + LINK_KEY_WAREHOUSE_ID + "));";
+    private static final String DATABASE_TABLE_PRODUCTS = "products";
+    private static final String PRODUCT_KEY_ID = "_id";
+    private static final String PRODUCT_KEY_NAME = "NAME_COLUMN";
+    private static final String PRODUCT_KEY_PRICE = "PRICE_COLUMN";
+    private static final String PRODUCT_KEY_SIZE = "SIZE_COLUMN";
+    private static final String PRODUCT_KEY_WAREHOUSE = "WAREHOUSE_COLUMN";
+    private static final String PRODUCT_KEY_IMAGE = "IMAGE_COLUMN";
+    private static final String CREATE_DATABASE_TABLE_PRODUCTS = "CREATE TABLE "
+            + DATABASE_TABLE_PRODUCTS + "(" + PRODUCT_KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + PRODUCT_KEY_NAME + " TEXT,"
+            + PRODUCT_KEY_PRICE + " REAL,"
+            + PRODUCT_KEY_SIZE + " REAL,"
+            + PRODUCT_KEY_WAREHOUSE + " INTEGER,"
+            + PRODUCT_KEY_IMAGE + " TEXT,"
+            + " FOREIGN KEY (" + PRODUCT_KEY_WAREHOUSE + ")"
+            + " REFERENCES " + DATABASE_TABLE_WAREHOUSES + "(" + WAREHOUSE_KEY_ID + "));";
 
 
     public DatabaseManager(Context context) {
@@ -63,7 +52,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_DATABASE_TABLE_PRODUCTS);
         db.execSQL(CREATE_DATABASE_TABLE_WAREHOUSES);
-        db.execSQL(CREATE_DATABASE_TABLE_LINK);
     }
 
     @Override
@@ -107,29 +95,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return warehouseList;
     }
 
-    public LinkedList<StockMemberModel> getStockOf(int warehouseID) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        LinkedList<StockMemberModel> stockList = new LinkedList<>();
-        String selectQuery = "SELECT " + DATABASE_TABLE_PRODUCTS + "." + PRODUCT_KEY_ID + ", "
-                + DATABASE_TABLE_PRODUCTS + "." + PRODUCT_KEY_NAME + ", "
-                + DATABASE_TABLE_LINK + "." + LINK_KEY_AMOUNT
-                + " FROM " + DATABASE_TABLE_PRODUCTS
-                + " INNER JOIN " + DATABASE_TABLE_LINK + " ON "
-                + DATABASE_TABLE_PRODUCTS + "." + PRODUCT_KEY_ID + "="
-                + DATABASE_TABLE_LINK + "." + LINK_KEY_PRODUCT_ID + ";";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        while (cursor.moveToNext()) {
-            StockMemberModel product = new StockMemberModel();
-            product.setProductID(cursor.getInt(cursor.getColumnIndex(PRODUCT_KEY_ID)));
-            product.setWarehouseID(warehouseID);
-            product.setName(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_NAME)));
-            product.setAmount(cursor.getInt(cursor.getColumnIndex(LINK_KEY_AMOUNT)));
-            stockList.addLast(product);
-        }
-        return stockList;
-    }
-
     public String getWarehouseName(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String name;
@@ -151,12 +116,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return db.insert(DATABASE_TABLE_PRODUCTS, null, newValues);
     }
 
-    public void updateProduct(int id, String name, float price, float size, String image) {
+    public boolean removeProduct(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int count = db.delete(DATABASE_TABLE_PRODUCTS, PRODUCT_KEY_ID + "=" + id, null);
+        if (count > 0) { return true; } else { return false; }
+    }
+
+    public void updateProduct(int id, String name, float price, float size, int warehouseID, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(PRODUCT_KEY_NAME, name);
         updatedValues.put(PRODUCT_KEY_PRICE, price);
         updatedValues.put(PRODUCT_KEY_SIZE, size);
+        updatedValues.put(PRODUCT_KEY_WAREHOUSE, warehouseID);
         updatedValues.put(PRODUCT_KEY_IMAGE, image);
         String where = PRODUCT_KEY_ID + " = ?";
         String whereArgs[] = new String[]{String.valueOf(id)};
@@ -190,7 +162,49 @@ public class DatabaseManager extends SQLiteOpenHelper {
         product.setName(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_NAME)));
         product.setPrice(cursor.getFloat(cursor.getColumnIndex(PRODUCT_KEY_PRICE)));
         product.setSize(cursor.getFloat(cursor.getColumnIndex(PRODUCT_KEY_SIZE)));
+        product.setWarehouse(cursor.getInt(cursor.getColumnIndex(PRODUCT_KEY_WAREHOUSE)));
         product.setImage(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_IMAGE)));
         return product;
+    }
+
+    public int getWarehouseByLocation(String location) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT " + WAREHOUSE_KEY_ID + " FROM " + DATABASE_TABLE_WAREHOUSES
+                + " WHERE " + WAREHOUSE_KEY_LOCATION + "='" + location + "'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        boolean exists = cursor.moveToNext();
+
+        if (exists) {
+            return cursor.getInt(cursor.getColumnIndex(WAREHOUSE_KEY_ID));
+        } else {
+            return -1;
+        }
+    }
+
+    public String getWarehouseByID(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT " + WAREHOUSE_KEY_LOCATION + " FROM " + DATABASE_TABLE_WAREHOUSES
+                + " WHERE " + WAREHOUSE_KEY_ID + "=" + id + ";";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        boolean exists = cursor.moveToNext();
+
+        if (exists) {
+            return cursor.getString(cursor.getColumnIndex(WAREHOUSE_KEY_LOCATION));
+        } else {
+            return "";
+        }
+    }
+
+    public LinkedList<String> getInventoryOf(int warehouseID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT " + PRODUCT_KEY_NAME + " FROM " + DATABASE_TABLE_PRODUCTS
+                + " WHERE " + PRODUCT_KEY_WAREHOUSE + "=" + warehouseID + ";";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        LinkedList<String> output = new LinkedList<>();
+
+        while (cursor.moveToNext()) {
+            output.addLast(cursor.getString(cursor.getColumnIndex(PRODUCT_KEY_NAME)));
+        }
+        return output;
     }
 }

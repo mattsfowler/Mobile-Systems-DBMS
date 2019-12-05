@@ -15,11 +15,11 @@ import java.util.LinkedList;
 public class StockListAdapter extends
         RecyclerView.Adapter<StockListAdapter.StockViewHolder> {
 
-    private final LinkedList<StockMemberModel> mStockList;
+    private final LinkedList<String> mStockList;
     private LayoutInflater mInflater;
 
     public StockListAdapter(Context context,
-                              LinkedList<StockMemberModel> stockList) {
+                              LinkedList<String> stockList) {
         mInflater = LayoutInflater.from(context);
         this.mStockList = stockList;
     }
@@ -33,8 +33,8 @@ public class StockListAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull StockViewHolder holder, int position) {
-        StockMemberModel mCurrent = mStockList.get(position);
-        holder.stockItemView.setText(mCurrent.getName());
+        String mCurrent = mStockList.get(position);
+        holder.stockItemView.setText(mCurrent);
     }
 
     @Override
@@ -57,14 +57,8 @@ public class StockListAdapter extends
 
         @Override
         public void onClick(View v) {
-            Context context = v.getContext();
-            int mPosition = getLayoutPosition();
-            StockMemberModel element = mStockList.get(mPosition);
-            Intent intent = new Intent(context, EditStock.class);
-            intent.putExtra("product_id", element.getProductID());
-            intent.putExtra("product_name", element.getName());
-            intent.putExtra("amount", element.getAmount());
-            context.startActivity(intent);
+            // In initial design, clicking on a specific item would take you to the stock-editor for that item.
+            // In redesign, the stock cannot be edited from this activity.
         }
     }
 }

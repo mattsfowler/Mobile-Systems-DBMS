@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cslEditProduct"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -42,18 +43,19 @@
             android:inputType="textPersonName" />
     </LinearLayout>
 
+
     <LinearLayout
         android:id="@+id/priceLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/nameLayout" >
+        app:layout_constraintTop_toBottomOf="@id/nameLayout">
 
         <TextView
             android:id="@+id/lblPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Price:      "
+            android:text="Price:    "
             android:textSize="18sp"
             tools:layout_editor_absoluteX="29dp"
             tools:layout_editor_absoluteY="52dp" />
@@ -73,16 +75,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/priceLayout" >
+        app:layout_constraintTop_toBottomOf="@id/priceLayout">
 
-    <TextView
-        android:id="@+id/lblSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Size:      "
-        android:textSize="18sp"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="52dp" />
+        <TextView
+            android:id="@+id/lblSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Size:    "
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="52dp" />
 
         <EditText
             android:id="@+id/txtSize"
@@ -93,21 +95,46 @@
             android:inputType="numberDecimal" />
     </LinearLayout>
 
+
+    <LinearLayout
+        android:id="@+id/setWarehouseLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/sizeLayout">
+
+        <TextView
+            android:id="@+id/lblWarehouses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Warehouse:    "
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="52dp" />
+
+        <EditText
+            android:id="@+id/txtWarehouses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
     <LinearLayout
         android:id="@+id/setImgLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/sizeLayout" >
+        app:layout_constraintTop_toBottomOf="@id/setWarehouseLayout">
 
-    <TextView
-        android:id="@+id/lblAddImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Image (optional):      "
-        android:textSize="18sp"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="52dp" />
+        <TextView
+            android:id="@+id/lblAddImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Image (optional):      "
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="52dp" />
 
         <Button
             android:id="@+id/btnSetImage"
@@ -117,4 +144,5 @@
             android:onClick="onSetImageClick"
             android:text="Set Image" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
