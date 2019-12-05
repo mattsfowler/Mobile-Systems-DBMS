@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -74,6 +75,22 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return productList;
     }
 
+    public LinkedList<WarehouseMemberModel> getAllWarehouses() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        LinkedList<WarehouseMemberModel> warehouseList = new LinkedList<>();
+        String selectQuery = "SELECT * FROM " + DATABASE_TABLE_WAREHOUSES;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        while (cursor.moveToNext()) {
+            WarehouseMemberModel warehouse = new WarehouseMemberModel();
+            warehouse.setId(cursor.getInt(cursor.getColumnIndex(WAREHOUSE_KEY_ID)));
+            warehouse.setLocation(cursor.getString(cursor.getColumnIndex(WAREHOUSE_KEY_LOCATION)));
+            warehouse.setCapacity(cursor.getFloat(cursor.getColumnIndex(WAREHOUSE_KEY_CAPACITY)));
+            warehouseList.addLast(warehouse);
+        }
+        return warehouseList;
+    }
+
     public long addProduct(String name, float price, float size, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues newValues = new ContentValues();
@@ -116,6 +133,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String selectQuery = "SELECT * FROM " + DATABASE_TABLE_PRODUCTS
                 + " WHERE " + PRODUCT_KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToNext();
 
         ProductMemberModel product = new ProductMemberModel();
         product.setId(cursor.getInt(cursor.getColumnIndex(PRODUCT_KEY_ID)));

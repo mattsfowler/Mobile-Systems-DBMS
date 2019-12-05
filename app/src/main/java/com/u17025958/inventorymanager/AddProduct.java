@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class AddProduct extends AppCompatActivity {
         Intent intent = getIntent();
         this.id = intent.getIntExtra("id", -1);
         if (this.id > -1) {
+            Log.d("AddProduct", "id = " + this.id);
             ProductMemberModel product = DBManager.getProductByID(id);
             txtName.setText(product.getName());
             txtPrice.setText(( ((Float)product.getPrice()).toString() ));

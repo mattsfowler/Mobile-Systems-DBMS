@@ -4,7 +4,7 @@ public class WarehouseMemberModel {
 
     private int id;
     private String location;
-    private String capacity;
+    private float capacity;
 
     public int getId() {
         return id;
@@ -22,11 +22,11 @@ public class WarehouseMemberModel {
         this.location = location;
     }
 
-    public String getCapacity() {
+    public float getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(String capacity) {
+    public void setCapacity(float capacity) {
         this.capacity = capacity;
     }
 

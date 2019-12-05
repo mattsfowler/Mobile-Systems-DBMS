@@ -52,6 +52,7 @@ public class ViewProducts extends AppCompatActivity {
                 .setAction("Action", null).show();
         intent.putExtra("id", -1);
         startActivity(intent);
+        plAdapter.notifyDataSetChanged();
     }
 
     public void getProductList(){
