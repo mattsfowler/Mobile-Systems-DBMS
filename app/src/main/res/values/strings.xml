@@ -5,4 +5,5 @@
     <string name="title_activity_add_product">AddProduct</string>
     <string name="title_activity_view_warehouses">ViewWarehouses</string>
     <string name="title_activity_view_warehouse_stock">ViewWarehouseStock</string>
+    <string name="title_activity_edit_stock">EditStock</string>
 </resources>

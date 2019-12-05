@@ -38,12 +38,7 @@ public class ViewWarehouses extends AppCompatActivity {
     }
 
     public void onFABClick(View view) {
-        Intent intent = new Intent(this, ViewWarehouseStock.class);
-        Snackbar.make(view, "Opening warehouse stock view", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
-        intent.putExtra("id", -1);
-        startActivity(intent);
-        wlAdapter.notifyDataSetChanged();
+        // Nothing yet
     }
 
 }

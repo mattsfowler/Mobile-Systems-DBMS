@@ -61,7 +61,7 @@ public class WarehouseListAdapter extends
             int mPosition = getLayoutPosition();
             WarehouseMemberModel element = mWarehouseList.get(mPosition);
             Intent intent = new Intent(context, ViewWarehouseStock.class);
-            intent.putExtra("id", element.getId());
+            intent.putExtra("warehouse_id", element.getId());
             context.startActivity(intent);
         }
     }
