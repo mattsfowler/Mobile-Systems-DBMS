@@ -9,6 +9,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,6 +46,29 @@ public class AddProduct extends AppCompatActivity {
             txtPrice.setText(( ((Float)product.getPrice()).toString() ));
             txtSize.setText(( ((Float)product.getSize()).toString() ));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_product, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_remove) {
+            Log.d("AddProduct", "Removing beep boop...");
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     // Taken from Stack Overflow: https://stackoverflow.com/questions/5357455/limit-decimal-places-in-android-edittext

@@ -33,6 +33,7 @@
             tools:layout_editor_absoluteX="29dp"
             tools:layout_editor_absoluteY="52dp" />
 
+        <!--
         <TextView
             android:id="@+id/lblName"
             android:layout_width="wrap_content"
@@ -41,6 +42,12 @@
             android:textSize="18sp"
             tools:layout_editor_absoluteX="29dp"
             tools:layout_editor_absoluteY="52dp" />
+         -->
+        <Spinner
+            android:id="@+id/spnProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <LinearLayout
