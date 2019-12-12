@@ -1,6 +1,7 @@
 package com.u17025958.inventorymanager;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,10 +13,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +30,7 @@ public class AddProduct extends AppCompatActivity {
     TextView txtPrice;
     TextView txtSize;
     TextView txtWarehouses;
+    ImageView imgImage;
 
 
     @Override
@@ -114,7 +118,7 @@ public class AddProduct extends AppCompatActivity {
         if (warehouseID > -1) {
             if (this.id > -1) {
                 DBManager.updateProduct(id, name, price, size, warehouseID, "");
-                Snackbar.make(view, "Product updated", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Product updated: " + warehouseID, Snackbar.LENGTH_LONG).show();
             } else {
                 this.id = (int) DBManager.addProduct(name, price, size, "");
                 Snackbar.make(view, "New product created!", Snackbar.LENGTH_LONG).show();
@@ -125,7 +129,12 @@ public class AddProduct extends AppCompatActivity {
     }
     public void onSetImageClick(View view)
     {
-        //open a directory browser dialogue
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        startActivity(intent);
+        Uri uri = intent.getData();
+
     }
 
 }
